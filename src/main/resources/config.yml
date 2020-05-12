@@ -9,15 +9,13 @@
 servers:
   - 'example.com'
 max-stock-gift: 30
+broadcast:
+  use: true
+  message: '{player} boted in {service}'
 votedb:
-# Enable save database storage of user data.
   use: false
-# Select database type. sqlite or mysql
   db: "sqlite"
-# Input database name. sqlite:filename, mysql:dbname
   name: "vote.db"
-# Input database server connection settings.
-# server:port/user/pass is mysql only
   server: "localhost:port"
   user: "user"
   pass: "pass"

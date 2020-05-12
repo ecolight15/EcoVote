@@ -44,6 +44,8 @@ public class EcoVote extends PluginFrame {
         EcoVoteConfig conf = new EcoVoteConfig(this);
         conf.registerArrayString("servers");
         conf.registerInt("max-stock-gift");
+        conf.registerBoolean("broadcast.use");
+        conf.registerString("broadcast.message");
         conf.registerBoolean("votedb.use");
         conf.registerString("votedb.db");
         conf.registerString("votedb.name");

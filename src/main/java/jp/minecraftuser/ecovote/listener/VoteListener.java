@@ -8,6 +8,7 @@ import java.util.logging.Level;
 import jp.minecraftuser.ecoegg.EcoEgg;
 import jp.minecraftuser.ecoframework.ListenerFrame;
 import jp.minecraftuser.ecoframework.PluginFrame;
+import jp.minecraftuser.ecoframework.Utl;
 import jp.minecraftuser.ecousermanager.EcoUserManager;
 import jp.minecraftuser.ecousermanager.db.EcoUserUUIDStore;
 import jp.minecraftuser.ecovote.timer.AsyncVoteTimer;
@@ -38,6 +39,11 @@ public class VoteListener extends ListenerFrame {
     @EventHandler(priority=EventPriority.NORMAL)
     public void onVotifierEvent(VotifierEvent event) {
         Vote vote = event.getVote();
+        log.log(Level.INFO, "Address:" + vote.getAddress());
+        log.log(Level.INFO, "ServiceName:" + vote.getServiceName());
+        log.log(Level.INFO, "TimeStamp:" + vote.getTimeStamp() + "(local:"+vote.getLocalTimestamp()+")");
+        log.log(Level.INFO, "Username:" + vote.getUsername());
+
         // 受信設定済みのサーバーからの受信のみ処理する
         boolean hit = false;
         for (String s : conf.getArrayList("servers")) {
@@ -60,10 +66,10 @@ public class VoteListener extends ListenerFrame {
             timer.sendData(v);
         }
 
-        log.log(Level.INFO, "Address:" + vote.getAddress());
-        log.log(Level.INFO, "ServiceName:" + vote.getServiceName());
-        log.log(Level.INFO, "TimeStamp:" + vote.getTimeStamp() + "(local:"+vote.getLocalTimestamp()+")");
-        log.log(Level.INFO, "Username:" + vote.getUsername());
+        // 投票ブロードキャストメッセージ
+        if (conf.getBoolean("broadcast.use")) {
+            Utl.sendPluginMessage(plg, null, conf.getString("broadcast.message").replaceAll("\\{player\\}", vote.getUsername()).replaceAll("\\{service\\}", vote.getServiceName()));
+        }
     }
 }
 
