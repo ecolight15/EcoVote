@@ -1,0 +1,23 @@
+# Optional
+#votedb:                      # userdata database section
+#    use: false               # Enable save database storage of user data.
+#    db: "sqlite"             # Select database type. sqlite or mysql
+#    name: "userdata.db"      # Input database name. sqlite:filename, mysql:dbname
+#    server: "localhost:port" # Input database server connection settings.
+#    user: "user"             # server/user/pass is mysql only
+#    pass: "pass"
+servers:
+  - 'example.com'
+max-stock-gift: 30
+votedb:
+# Enable save database storage of user data.
+  use: false
+# Select database type. sqlite or mysql
+  db: "sqlite"
+# Input database name. sqlite:filename, mysql:dbname
+  name: "vote.db"
+# Input database server connection settings.
+# server:port/user/pass is mysql only
+  server: "localhost:port"
+  user: "user"
+  pass: "pass"
