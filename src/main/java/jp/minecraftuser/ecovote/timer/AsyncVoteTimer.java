@@ -201,7 +201,7 @@ public class AsyncVoteTimer extends AsyncProcessFrame {
                         EcoUserUUIDStore store = ((EcoUserManager) plg.getPluginFrame("EcoUserManager")).getStore();
                         sendPluginMessage(plg, pll, "--- 通算投票TOP10 ---");
                         for (VoteStore.UserStat us : p.userList) {
-                            sendPluginMessage(plg, pll, us.rank + ":" + store.latestName(p.uuid) + "(" + us.vote + ")");
+                            sendPluginMessage(plg, pll, us.rank + ":" + store.latestName(us.uuid) + "(" + us.vote + ")");
                         }
                         sendPluginMessage(plg, pll, "--- プレイヤーの順位 ---");
                         if (p.user == null) {
