@@ -68,7 +68,13 @@ public class VoteListener extends ListenerFrame {
 
         // 投票ブロードキャストメッセージ
         if (conf.getBoolean("broadcast.use")) {
-            Utl.sendPluginMessage(plg, null, conf.getString("broadcast.message").replaceAll("\\{player\\}", vote.getUsername()).replaceAll("\\{service\\}", vote.getServiceName()));
+            if (vote.getServiceName().contains("minecraft.jp")) {
+                Utl.sendPluginMessage(plg, null, conf.getString("broadcast.message").replaceAll("\\{player\\}", vote.getUsername()).replaceAll("\\{service\\}", "https://minecraft.jp/servers/52d049314ddda10f0d0041a7"));
+            } else if (vote.getServiceName().contains("monocraft.net")) {
+                Utl.sendPluginMessage(plg, null, conf.getString("broadcast.message").replaceAll("\\{player\\}", vote.getUsername()).replaceAll("\\{service\\}", "https://monocraft.net/servers/W1XCgEv8JWHiwAtOGtGo/vote"));
+            } else {
+                Utl.sendPluginMessage(plg, null, conf.getString("broadcast.message").replaceAll("\\{player\\}", vote.getUsername()).replaceAll("\\{service\\}", vote.getServiceName()));
+            }
         }
     }
 }

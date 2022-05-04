@@ -3,7 +3,7 @@ main: jp.minecraftuser.ecovote.EcoVote
 version: ${project.version}
 api-version: 1.15
 depend: [EcoFramework, Votifier]
-softdepend: [EcoUserManager]
+softdepend: [EcoUserManager, EcoMQTTServerLog]
 commands:
   evote:
     description: evote command root
