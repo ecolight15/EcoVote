@@ -5,15 +5,12 @@ import com.vexsoftware.votifier.model.Vote;
 import com.vexsoftware.votifier.model.VotifierEvent;
 import java.util.UUID;
 import java.util.logging.Level;
-import jp.minecraftuser.ecoegg.EcoEgg;
 import jp.minecraftuser.ecoframework.ListenerFrame;
 import jp.minecraftuser.ecoframework.PluginFrame;
 import jp.minecraftuser.ecoframework.Utl;
-import jp.minecraftuser.ecousermanager.EcoUserManager;
-import jp.minecraftuser.ecousermanager.db.EcoUserUUIDStore;
+import jp.minecraftuser.ecomqttserverlog.EcoMQTTServerLog;
 import jp.minecraftuser.ecovote.timer.AsyncVoteTimer;
 import jp.minecraftuser.ecovote.timer.VotePayload;
-import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 
@@ -56,9 +53,8 @@ public class VoteListener extends ListenerFrame {
         if (!hit) return;
         
         // Todo:ロード出来ない場合の処理は保留
-        EcoUserManager eum = (EcoUserManager) plg.getPluginFrame("EcoUserManager");
-        EcoUserUUIDStore store = eum.getStore();
-        UUID uuid = store.latestUUID(vote.getUsername());
+        EcoMQTTServerLog emsl = (EcoMQTTServerLog) plg.getPluginFrame("EcoUserManager");
+        UUID uuid = emsl.latestUUID(vote.getUsername());
 
         if (uuid != null) {
             VotePayload v = new VotePayload(plg, vote.getServiceName(), uuid);

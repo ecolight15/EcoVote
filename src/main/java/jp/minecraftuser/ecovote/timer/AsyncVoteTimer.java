@@ -12,8 +12,6 @@ import jp.minecraftuser.ecoframework.async.*;
 import jp.minecraftuser.ecoframework.PluginFrame;
 import static jp.minecraftuser.ecoframework.Utl.sendPluginMessage;
 import jp.minecraftuser.ecomqttserverlog.EcoMQTTServerLog;
-import jp.minecraftuser.ecousermanager.EcoUserManager;
-import jp.minecraftuser.ecousermanager.db.EcoUserUUIDStore;
 import jp.minecraftuser.ecovote.db.VoteStore;
 import jp.minecraftuser.ecovote.listener.VoteListener;
 import org.bukkit.Material;
@@ -204,18 +202,12 @@ public class AsyncVoteTimer extends AsyncProcessFrame {
                         sendPluginMessage(plg, pll, "投票情報の取得に失敗しました");
                     } else {
                         EcoMQTTServerLog logp = (EcoMQTTServerLog) plg.getServer().getPluginManager().getPlugin("EcoMQTTServerLog");
-                        EcoUserManager eump = (EcoUserManager) plg.getServer().getPluginManager().getPlugin("EcoUserManager");
-                        EcoUserUUIDStore store = null;
-                        if (eump != null) store = eump.getStore();
 
                         sendPluginMessage(plg, pll, "--- 通算投票TOP10 ---");
                         String name = null;
                         for (VoteStore.UserStat us : p.userList) {
                             if (logp != null) {
                                 name = logp.latestName(us.uuid);
-                            }
-                            if (name == null && eump != null) {
-                                name = store.latestName(us.uuid);
                             } else {
                                 name = "name not found";
                             }
@@ -227,9 +219,6 @@ public class AsyncVoteTimer extends AsyncProcessFrame {
                         } else {
                             if (logp != null) {
                                 name = logp.latestName(p.uuid);
-                            }
-                            if (name == null && eump != null) {
-                                name = store.latestName(p.uuid);
                             } else {
                                 name = "name not found";
                             }

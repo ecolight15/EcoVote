@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>jp.minecraftuser</groupId>
     <artifactId>EcoVote</artifactId>
-    <version>0.6</version>
+    <version>0.7</version>
     <packaging>jar</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -41,12 +41,6 @@
             <groupId>jp.minecraftuser</groupId>
             <artifactId>EcoEgg</artifactId>
             <version>0.12</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>jp.minecraftuser</groupId>
-            <artifactId>EcoUserManager</artifactId>
-            <version>0.8</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
