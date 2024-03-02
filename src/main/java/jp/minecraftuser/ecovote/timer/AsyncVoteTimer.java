@@ -9,16 +9,20 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jp.minecraftuser.ecoframework.async.*;
+import jp.minecraftuser.ecoegg.EcoEgg;
 import jp.minecraftuser.ecoframework.PluginFrame;
 import static jp.minecraftuser.ecoframework.Utl.sendPluginMessage;
 import jp.minecraftuser.ecomqttserverlog.EcoMQTTServerLog;
 import jp.minecraftuser.ecovote.db.VoteStore;
 import jp.minecraftuser.ecovote.listener.VoteListener;
+
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.plugin.Plugin;
 
 /**
  * 非同期プレイヤーデータ保存クラス
@@ -90,20 +94,45 @@ public class AsyncVoteTimer extends AsyncProcessFrame {
                         Random rnd = new Random();
                         int v = rnd.nextInt(100);
                         ItemStack item;
-                        if (v < 5) {
-                            log.log(Level.INFO, "gen Player head");
-                            // プレイヤーヘッド
-                            item = new ItemStack(Material.PLAYER_HEAD, 1);
-                            SkullMeta meta = (SkullMeta) item.getItemMeta();
-                            meta.setOwningPlayer(plg.getServer().getOfflinePlayer(data.uuid));
-                            item.setItemMeta(meta);
+                        String name = "";
+                        if (v < 20) {
+                            Plugin plugin = Bukkit.getPluginManager().getPlugin("EcoEgg");
+                            if (plugin == null) return;
+                            item = ((EcoEgg)plugin).makeBook();
+                            name = "えこたまご";
                         } else if (v < 30) {
-                            log.log(Level.INFO, "gen Diamond block");
-                            item = new ItemStack(Material.DIAMOND_BLOCK, 1);
+                            item = new ItemStack(Material.DIAMOND);
+                            name = "ダイアモンド";
+                        } else if (v < 40) {
+                            item = new ItemStack(Material.BIG_DRIPLEAF);
+                            item.setAmount(64);
+                            name = "大きなドリップリーフ";
+                        } else if (v < 45) {
+                            item = new ItemStack(Material.HEART_OF_THE_SEA);
+                            name = "海洋の心";
+                        } else if (v < 50) {
+                            item = new ItemStack(Material.TOTEM_OF_UNDYING);
+                            name = "不死のトーテム";
+                        } else if (v < 60) {
+                            item = new ItemStack(Material.SCULK_SENSOR);
+                            name = "スカルクセンサー";
+                        } else if (v < 70) {
+                            item = new ItemStack(Material.ENCHANTED_GOLDEN_APPLE);
+                            name = "エンチャントされた金のリンゴ";
+                        } else if (v < 80) {
+                            item = new ItemStack(Material.ELYTRA);
+                            name = "エリトラ";
+                        } else if (v < 90) {
+                            item = new ItemStack(Material.CRYING_OBSIDIAN);
+                            name = "泣く黒曜石";
                         } else {
-                            log.log(Level.INFO, "gen cookie");
-                            item = new ItemStack(Material.COOKIE, 1);
+                            item = new ItemStack(Material.PLAYER_HEAD);
+                            SkullMeta myPlayerSkullMeta = (SkullMeta)item.getItemMeta();
+                            myPlayerSkullMeta.setOwningPlayer(plg.getServer().getOfflinePlayer(data.uuid));
+                            item.setItemMeta(myPlayerSkullMeta);
+                            name = "プレイヤーヘッドブロック";
                         }
+                        log.log(Level.INFO, "gen " + name);
                         items.add(item);
                         db.insertVoteItem(con, data.uuid, items.toArray(new ItemStack[items.size()]));
                     }

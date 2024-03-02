@@ -38,7 +38,7 @@ public class VoteListener extends ListenerFrame {
         Vote vote = event.getVote();
         log.log(Level.INFO, "Address:" + vote.getAddress());
         log.log(Level.INFO, "ServiceName:" + vote.getServiceName());
-        log.log(Level.INFO, "TimeStamp:" + vote.getTimeStamp() + "(local:"+vote.getLocalTimestamp()+")");
+        log.log(Level.INFO, "TimeStamp:" + vote.getTimeStamp());
         log.log(Level.INFO, "Username:" + vote.getUsername());
 
         // 受信設定済みのサーバーからの受信のみ処理する
@@ -53,7 +53,7 @@ public class VoteListener extends ListenerFrame {
         if (!hit) return;
         
         // Todo:ロード出来ない場合の処理は保留
-        EcoMQTTServerLog emsl = (EcoMQTTServerLog) plg.getPluginFrame("EcoUserManager");
+        EcoMQTTServerLog emsl = (EcoMQTTServerLog) plg.getPluginFrame("EcoMQTTServerLog");
         UUID uuid = emsl.latestUUID(vote.getUsername());
 
         if (uuid != null) {
