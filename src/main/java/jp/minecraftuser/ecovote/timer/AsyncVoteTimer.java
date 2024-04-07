@@ -213,11 +213,11 @@ public class AsyncVoteTimer extends AsyncProcessFrame {
                         if (p.items.length == 0) {
                             sendPluginMessage(plg, pll, "投票を検知しましたが、投票特典の配布に失敗しました");
                         } else {
-                            sendPluginMessage(plg, pll, "{0}への投票で次のアイテムが配布されました", p.service);
+                            sendPluginMessage(plg, pll, "{0} への投票で次のアイテムが配布されました", p.service);
                             for (ItemStack i : p.items) {
                                 sendPluginMessage(plg, pll, " - {0} x {1}", i.getType().name(), Integer.toString(i.getAmount()));
                             }
-                            sendPluginMessage(plg, pll, "配布アイテムは /evote get コマンドで取得できます", p.service);
+                            sendPluginMessage(plg, pll, "配布アイテムは /evote get コマンドで取得できます");
                         }
                     }
                 }
@@ -294,11 +294,11 @@ public class AsyncVoteTimer extends AsyncProcessFrame {
                         if (p.items.length == 0) {
                             sendPluginMessage(plg, pll, "配布アイテムの再保管に際しアイテム情報が不正でした");
                         } else {
-                            sendPluginMessage(plg, pll, "次のアイテムを再保管しました", p.service);
+                            sendPluginMessage(plg, pll, "次のアイテムを再保管しました");
                             for (ItemStack i : p.items) {
                                 sendPluginMessage(plg, pll, " - {0} x {1}", i.getType().name(), Integer.toString(i.getAmount()));
                             }
-                            sendPluginMessage(plg, pll, "配布アイテムは /evote get コマンドで取得できます", p.service);
+                            sendPluginMessage(plg, pll, "配布アイテムは /evote get コマンドで取得できます");
                         }
                     }
                 }
