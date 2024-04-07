@@ -3,6 +3,7 @@ package jp.minecraftuser.ecovote.listener;
 
 import com.vexsoftware.votifier.model.Vote;
 import com.vexsoftware.votifier.model.VotifierEvent;
+
 import java.util.UUID;
 import java.util.logging.Level;
 import jp.minecraftuser.ecoframework.ListenerFrame;
@@ -11,6 +12,8 @@ import jp.minecraftuser.ecoframework.Utl;
 import jp.minecraftuser.ecomqttserverlog.EcoMQTTServerLog;
 import jp.minecraftuser.ecovote.timer.AsyncVoteTimer;
 import jp.minecraftuser.ecovote.timer.VotePayload;
+
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 
@@ -65,9 +68,13 @@ public class VoteListener extends ListenerFrame {
         // 投票ブロードキャストメッセージ
         if (conf.getBoolean("broadcast.use")) {
             if (vote.getServiceName().contains("minecraft.jp")) {
-                Utl.sendPluginMessage(plg, null, conf.getString("broadcast.message").replaceAll("\\{player\\}", vote.getUsername()).replaceAll("\\{service\\}", "https://minecraft.jp/servers/52d049314ddda10f0d0041a7"));
+                for (Player player : plg.getServer().getOnlinePlayers()) {
+                    this.plg.getServer().dispatchCommand(this.plg.getServer().getConsoleSender(), "tellraw " + player.getName() + " [\"\",{\"text\":\"" + vote.getUsername() + " \"},{\"text\":\"voted\",\"color\":\"light_purple\"},{\"text\":\" in \"},{\"text\":\"minecraft.jp\",\"color\":\"green\"},{\"text\":\" (\"},{\"text\":\"link\",\"underlined\":true,\"color\":\"aqua\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"https://minecraft.jp/servers/52d049314ddda10f0d0041a7\"}},{\"text\":\")\"}]");
+                }
             } else if (vote.getServiceName().contains("monocraft.net")) {
-                Utl.sendPluginMessage(plg, null, conf.getString("broadcast.message").replaceAll("\\{player\\}", vote.getUsername()).replaceAll("\\{service\\}", "https://monocraft.net/servers/W1XCgEv8JWHiwAtOGtGo/vote"));
+                for (Player player : plg.getServer().getOnlinePlayers()) {
+                    this.plg.getServer().dispatchCommand(this.plg.getServer().getConsoleSender(), "tellraw " + player.getName() + " [\"\",{\"text\":\"" + vote.getUsername() + " \"},{\"text\":\"voted\",\"color\":\"light_purple\"},{\"text\":\" in \"},{\"text\":\"monocraft.net\",\"color\":\"green\"},{\"text\":\" (\"},{\"text\":\"link\",\"underlined\":true,\"color\":\"aqua\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"https://monocraft.net/servers/W1XCgEv8JWHiwAtOGtGo/vote\"}},{\"text\":\")\"}]");
+                }
             } else {
                 Utl.sendPluginMessage(plg, null, conf.getString("broadcast.message").replaceAll("\\{player\\}", vote.getUsername()).replaceAll("\\{service\\}", vote.getServiceName()));
             }
