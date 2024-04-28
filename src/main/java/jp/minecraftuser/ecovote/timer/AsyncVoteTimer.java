@@ -4,8 +4,9 @@ package jp.minecraftuser.ecovote.timer;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.Random;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jp.minecraftuser.ecoframework.async.*;
@@ -31,6 +32,29 @@ import org.bukkit.plugin.Plugin;
 public class AsyncVoteTimer extends AsyncProcessFrame {
     // 呼び出し元のリスナを覚えておく(executeReceiveのみR/W可とする)
     private final VoteListener listener;
+    class AwardItem {
+        public String desc;
+        public ItemStack item;
+        public int perMille;
+        AwardItem(int perMille_, String desc_, Material type_, int amount_) {
+            desc = desc_;
+            item = new ItemStack(type_, amount_);
+            perMille = perMille_;
+        }
+        AwardItem(int perMille_, String desc_, ItemStack item_) {
+            desc = desc_;
+            item = item_;
+            perMille = perMille_;
+        }
+        AwardItem(int perMille_, String desc_, ItemStack item_, int amount_) {
+            desc = desc_;
+            item = item_;
+            item.setAmount(amount_);
+            perMille = perMille_;
+        }
+    }
+    private ArrayList<AwardItem> awardItemList;
+    private ArrayList<AwardItem> awardBox;
 
     /**
      * 親スレッド用コンストラクタ
@@ -41,6 +65,7 @@ public class AsyncVoteTimer extends AsyncProcessFrame {
     public AsyncVoteTimer(PluginFrame plg_, VoteListener listener_, String name_) {
         super(plg_, name_);
         listener = listener_;
+        initializeAwardTable();
     }
 
     /**
@@ -53,6 +78,49 @@ public class AsyncVoteTimer extends AsyncProcessFrame {
     public AsyncVoteTimer(PluginFrame plg_, VoteListener listener_, String name_, AsyncFrame frame_) {
         super(plg_, name_, frame_);
         this.listener = listener_;
+        initializeAwardTable();
+    }
+
+    private void initializeAwardTable() {
+        awardItemList = new ArrayList<>();
+        Plugin plugin = Bukkit.getPluginManager().getPlugin("EcoEgg");
+        awardItemList.add(new AwardItem(200, "えこたまご", ((EcoEgg)plugin).makeBook()));
+        awardItemList.add(new AwardItem(100, "ダイアモンドブロック", Material.DIAMOND_BLOCK, 1));
+        awardItemList.add(new AwardItem(100, "大きなドリップリーフ", Material.BIG_DRIPLEAF, 64));
+        awardItemList.add(new AwardItem(50, "海洋の心", Material.HEART_OF_THE_SEA, 1));
+        awardItemList.add(new AwardItem(50, "不死のトーテム", Material.TOTEM_OF_UNDYING, 1));
+        awardItemList.add(new AwardItem(100, "スカルクセンサー", Material.SCULK_SENSOR, 1));
+        awardItemList.add(new AwardItem(100, "エンチャントされた金のリンゴ", Material.ENCHANTED_GOLDEN_APPLE, 1));
+        awardItemList.add(new AwardItem(10, "エリトラ", Material.ELYTRA, 1));
+        awardItemList.add(new AwardItem(100, "泣く黒曜石", Material.CRYING_OBSIDIAN, 1));
+        
+        awardBox = new ArrayList<>();
+        for (AwardItem workItem : awardItemList) {
+            for (int size = workItem.perMille; size != 0; size--) {
+                awardBox.add(workItem);
+            }
+        }
+        for (int idx = awardBox.size(); idx < 1000; idx++) {
+            awardBox.add(new AwardItem(0, "", new ItemStack(Material.AIR)));
+        }
+        Collections.shuffle(awardBox);
+    }
+
+    public AwardItem getItemStack(UUID uuid) {
+        if (awardBox.size() <= 0) {
+            initializeAwardTable();
+        }
+        AwardItem result = awardBox.get(0);
+        awardBox.remove(0);
+
+        if (result.item.getType() == Material.AIR) {
+            ItemStack item = new ItemStack(Material.PLAYER_HEAD);
+            SkullMeta myPlayerSkullMeta = (SkullMeta)item.getItemMeta();
+            myPlayerSkullMeta.setOwningPlayer(plg.getServer().getOfflinePlayer(uuid));
+            item.setItemMeta(myPlayerSkullMeta);
+            result = new AwardItem(0, "プレイヤーヘッドブロック", item);
+        }
+        return result;
     }
 
     /**
@@ -90,50 +158,9 @@ public class AsyncVoteTimer extends AsyncProcessFrame {
                     log.log(Level.INFO, "update vote item table");
                     ArrayList<ItemStack> items = new ArrayList<>();
                     if (db.getVoteItemCount(con, data.uuid) < conf.getInt("max-stock-gift")) {
-                        // アイテムインサート
-                        Random rnd = new Random();
-                        int v = rnd.nextInt(100);
-                        ItemStack item;
-                        String name = "";
-                        if (v < 20) {
-                            Plugin plugin = Bukkit.getPluginManager().getPlugin("EcoEgg");
-                            if (plugin == null) return;
-                            item = ((EcoEgg)plugin).makeBook();
-                            name = "えこたまご";
-                        } else if (v < 30) {
-                            item = new ItemStack(Material.DIAMOND);
-                            name = "ダイアモンド";
-                        } else if (v < 40) {
-                            item = new ItemStack(Material.BIG_DRIPLEAF);
-                            item.setAmount(64);
-                            name = "大きなドリップリーフ";
-                        } else if (v < 45) {
-                            item = new ItemStack(Material.HEART_OF_THE_SEA);
-                            name = "海洋の心";
-                        } else if (v < 50) {
-                            item = new ItemStack(Material.TOTEM_OF_UNDYING);
-                            name = "不死のトーテム";
-                        } else if (v < 60) {
-                            item = new ItemStack(Material.SCULK_SENSOR);
-                            name = "スカルクセンサー";
-                        } else if (v < 70) {
-                            item = new ItemStack(Material.ENCHANTED_GOLDEN_APPLE);
-                            name = "エンチャントされた金のリンゴ";
-                        } else if (v < 80) {
-                            item = new ItemStack(Material.ELYTRA);
-                            name = "エリトラ";
-                        } else if (v < 90) {
-                            item = new ItemStack(Material.CRYING_OBSIDIAN);
-                            name = "泣く黒曜石";
-                        } else {
-                            item = new ItemStack(Material.PLAYER_HEAD);
-                            SkullMeta myPlayerSkullMeta = (SkullMeta)item.getItemMeta();
-                            myPlayerSkullMeta.setOwningPlayer(plg.getServer().getOfflinePlayer(data.uuid));
-                            item.setItemMeta(myPlayerSkullMeta);
-                            name = "プレイヤーヘッドブロック";
-                        }
-                        log.log(Level.INFO, "gen " + name);
-                        items.add(item);
+                        AwardItem award = getItemStack(data.uuid);
+                        log.log(Level.INFO, "gen " + award.desc);
+                        items.add(award.item);
                         db.insertVoteItem(con, data.uuid, items.toArray(new ItemStack[items.size()]));
                     }
                     data.items = items.toArray(new ItemStack[items.size()]);
@@ -218,6 +245,7 @@ public class AsyncVoteTimer extends AsyncProcessFrame {
                                 sendPluginMessage(plg, pll, " - {0} x {1}", i.getType().name(), Integer.toString(i.getAmount()));
                             }
                             sendPluginMessage(plg, pll, "配布アイテムは /evote get コマンドで取得できます");
+                            this.plg.getServer().dispatchCommand(this.plg.getServer().getConsoleSender(), "tellraw " + pll.getName() + " [\"\",{\"text\":\"\\u64cd\\u4f5c\"},{\"text\":\" \",\"color\":\"green\"},{\"text\":\"[\\u6295\\u7968\\u72b6\\u614b\\u78ba\\u8a8d]\",\"color\":\"green\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/evote\"}},{\"text\":\" \"},{\"text\":\"[\\u30a2\\u30a4\\u30c6\\u30e0\\u53d6\\u5f97]\",\"color\":\"yellow\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/evote get\"}}]");
                         }
                     }
                 }
@@ -299,6 +327,7 @@ public class AsyncVoteTimer extends AsyncProcessFrame {
                                 sendPluginMessage(plg, pll, " - {0} x {1}", i.getType().name(), Integer.toString(i.getAmount()));
                             }
                             sendPluginMessage(plg, pll, "配布アイテムは /evote get コマンドで取得できます");
+                            this.plg.getServer().dispatchCommand(this.plg.getServer().getConsoleSender(), "tellraw " + pll.getName() + " [\"\",{\"text\":\"\\u64cd\\u4f5c\"},{\"text\":\" \",\"color\":\"green\"},{\"text\":\"[\\u6295\\u7968\\u72b6\\u614b\\u78ba\\u8a8d]\",\"color\":\"green\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/evote\"}},{\"text\":\" \"},{\"text\":\"[\\u30a2\\u30a4\\u30c6\\u30e0\\u53d6\\u5f97]\",\"color\":\"yellow\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/evote get\"}}]");
                         }
                     }
                 }
