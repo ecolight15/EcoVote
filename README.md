@@ -1,6 +1,6 @@
 # EcoVote
 
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![License](https://img.shields.io/badge/license-LGPL--3.0-blue.svg)](LICENSE)
 [![Version](https://img.shields.io/badge/version-0.11-green.svg)](pom.xml)
 [![Minecraft](https://img.shields.io/badge/minecraft-1.20.4-orange.svg)](https://www.spigotmc.org/)
 
@@ -25,12 +25,12 @@ EcoVote is a Minecraft plugin that detects player votes on voting websites and d
 
 ### 必須依存関係 / Required Dependencies
 - **Minecraft Server**: Spigot/Paper 1.20.4+
-- **Java**: 8+
+- **Java**: 17+
 - **[nuVotifier](https://www.spigotmc.org/resources/nuvotifier.13449/)**: 2.6.0+
 - **EcoFramework**: 0.29+ (カスタムフレームワーク)
 
 ### オプション依存関係 / Optional Dependencies
-- **EcoEgg**: 1.11+ (アイテム報酬システム用)
+- **EcoEgg**: 1.11+ (オプション機能 - アイテム報酬システム用)
 - **EcoMQTTServerLog**: 0.6+ (プレイヤーUUID解決用)
 
 ## インストール / Installation
@@ -178,7 +178,7 @@ mvn clean compile package
 
 ## ライセンス / License
 
-このプロジェクトは MIT ライセンスの下で公開されています。詳細は [LICENSE](LICENSE) ファイルを参照してください。
+このプロジェクトは GNU Lesser General Public License v3.0 の下で公開されています。詳細は [LICENSE](LICENSE) ファイルを参照してください。
 
 ## 作者 / Author
 
